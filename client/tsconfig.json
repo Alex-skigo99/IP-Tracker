@@ -1,7 +1,36 @@
+// {
+//   "files": [],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" }
+//   ]
+// }
+
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "compilerOptions": {
+    "target": "es2022",                      // Target ECMAScript 2022
+    "module": "esnext",                      // Use ESNext modules
+    "lib": ["dom", "es2022"],                // Include DOM and ES2022 libraries
+    "jsx": "react-jsx",                      // JSX support for React 17+
+    "esModuleInterop": true,                 // Enable ES module interoperability
+    "moduleResolution": "node",              // Node.js-style module resolution
+    "skipLibCheck": true,                    // Skip type checks on declaration files for performance
+    "forceConsistentCasingInFileNames": true,// Ensure consistent casing in file names
+    "strict": true,                          // Enable strict type-checking options
+    "isolatedModules": true,                 // Isolate modules for transpilation
+    "noEmit": true                           // Disable file emitting (used in testing)
+  },
+  "include": [
+    "src",                                   // Include all source files
+    "**/*.test.ts",                          // Include test files for Jest/Vitest
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "vite.config.ts",
+    "setupTests.ts"
+  ],
+  "exclude": [
+    "node_modules",                          // Exclude node_modules
+    "dist"                                   // Exclude output directory
   ]
 }
