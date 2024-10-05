@@ -1,4 +1,4 @@
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import Header from '../components/Header/Header';
@@ -10,67 +10,47 @@ describe('Header', () => {
         expect(title).toBeInTheDocument();
     });
 
-    test('search for IP address', async () => {
+    test('renders Search component as children', async () => {
         render(<Header />);
         const input = screen.getByPlaceholderText(/Search for any IP address or domain/i);
-        const button = screen.getByRole('button', { name: /submit/i });
-
-        userEvent.type(input, '8.8.8.8');
-        userEvent.click(button);
-
-        await waitFor(() => {
-            const ipAddress = screen.getByText(/8.8.8.8/i);
-            expect(ipAddress).toBeInTheDocument();
-        });
+        expect(input).toBeInTheDocument();
     });
 
-    // test('fetches data and displays results', async () => {
-    //     global.fetch = jest.fn(() =>
-    //         Promise.resolve({
-    //             json: () => Promise.resolve({ ip: '8.8.8.8', location: 'Mountain View, CA' }),
-    //         })
-    //     ) as jest.Mock;
+    beforeEach(() => {
+        global.fetch = jest.fn();
+    });
 
-    //     render(<Header />);
-    //     const input = screen.getByPlaceholderText(/Search for any IP address or domain/i);
-    //     const button = screen.getByRole('button', { name: /Search/i });
+    test('fetches data and displays results', async () => {
+        const testResponseData = {
+            ip: '192.212.174.101',
+            location: {
+                city: 'Brooklyn',
+                region: 'NY',
+                country: 'US',
+                postalCode: '10001',
+                timezone: '-05:00',
+                lat: 40.71427,
+                lng: -74.00597,
+            },
+            isp: 'SpaceX Starlink',
+        };
+        jest.spyOn(global, 'fetch').mockImplementation(() =>
+            Promise.resolve({
+              ok: true,
+              status: 200,
+              json: () => Promise.resolve({ ...testResponseData}),
+            } as Response)
+          );
+        render(<Header />);
+        const input = screen.getByPlaceholderText(/Search for any IP address or domain/i);
+        await userEvent.type(input, '123');
+        await userEvent.click(screen.getByRole('button'));
 
-    //     userEvent.type(input, '8.8.8.8');
-    //     userEvent.click(button);
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(await screen.findByText('192.212.174.101')).toBeInTheDocument();
+        expect(await screen.findByText('Brooklyn, NY, US 10001')).toBeInTheDocument();
+        expect(await screen.findByText('UTC -05:00')).toBeInTheDocument();
+        expect(await screen.findByText('SpaceX Starlink')).toBeInTheDocument();
 
-    //     await waitFor(() => {
-    //         const ipAddress = screen.getByText(/8.8.8.8/i);
-    //         const location = screen.getByText(/Mountain View, CA/i);
-    //         expect(ipAddress).toBeInTheDocument();
-    //         expect(location).toBeInTheDocument();
-    //     });
-
-    //     global.fetch.mockClear();
-    // });
+    });
 });
-// The test above is testing the Header component. It renders the Header component and checks if the title is displayed. 
-// It then searches for an IP address and checks if the IP address is displayed. 
-// Finally, it fetches data and checks if the IP address and location are displayed. 
-// The test uses the waitFor function to wait for the data to be fetched before checking the results. 
-// The global.fetch mock is used to mock the fetch API call and return a predefined response. 
-// The mock is cleared after the test to prevent interference with other tests. 
-// The test uses the getByPlaceholderText and getByRole queries to select the input and button elements, respectively. 
-// The userEvent.type and userEvent.click functions are used to simulate user input and interaction with the elements. 
-// The getByText query is used to check if the IP address and location are displayed in the component. 
-// The test uses the jest.fn function to mock the fetch API call and return a predefined response. 
-// The json function is used to return the data object with the IP address and location. 
-// The test checks if the IP address and location are displayed in the component. 
-// The global.fetch.mockClear function is used to clear the mock after the test to prevent interference with other tests. 
-// The test uses the getByPlaceholderText and getByRole queries to select the input and button elements, respectively. 
-// The userEvent.type and userEvent.click functions are used to simulate user input and interaction with the elements. 
-// The getByText query is used to check if the IP address and location are displayed in the component. 
-// The test uses the jest.fn function to mock the fetch API call and return a predefined response. 
-// The json function is used to return the data object with the IP address and location. 
-// The test checks if the IP address and location are displayed in the component. 
-// The global.fetch.mockClear function is used to clear the mock after the test to prevent interference with other tests. 
-// The test uses the getByPlaceholderText and getByRole queries to select the input and button elements, respectively. 
-// The userEvent.type and userEvent.click functions are used to simulate user input and interaction with the elements. 
-// The getByText query is used to check if the IP address and location are displayed in the component. 
-// The test uses the jest.fn function to mock the fetch API call and return a predefined response. 
-// The json function is used to return the data object with the IP address and location. 
-// The test checks if the IP address and location are displayed in the component. The global.fetch.mockClear function is used to
