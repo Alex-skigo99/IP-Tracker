@@ -12,13 +12,15 @@ const Header = () => {
     lng: -74.00597
   };
   const [ipData, setIpData] = useState(sampleIpData);
-  const apiKey = process.env.VITE_API_KEY;
+  const [error, setError] = useState<string>('');
+  const apiKey = process.env.API_KEY;
+  const apiURL = process.env.API_URL;
 
   const handleSearch = async (word: string) => {
       try {
-        const response = await fetch(`https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}&ipAddress=${word}&domain=${word}`);
+        setError('');
+        const response = await fetch(`${apiURL}?apiKey=${apiKey}&ipAddress=${word}&domain=${word}`);
         const data = await response.json();
-        console.log('Data:', data);
         setIpData({
           ip: data.ip,
           location: `${data.location.city}, ${data.location.region}, ${data.location.country} ${data.location.postalCode}`,
@@ -27,8 +29,10 @@ const Header = () => {
           lat: data.location.lat,
           lng: data.location.lng
         });
-      } catch (error) {
-        console.log('Error:', error);
+      } catch (error: any) {
+        const errorText = String(error);
+        console.log('Error:', errorText);
+        setError(String(errorText));
       }
   };
 
@@ -52,12 +56,17 @@ const Header = () => {
     </div>
   </div>
   );
+  const errorContainer = (
+    <div className='error-container'>
+      <p>{error}</p>
+    </div>
+  );
 
   return (
     <header>
       <h1 id='title'>IP Address Tracker</h1>
-      <Search onSearch={(word) => handleSearch(word)} />
-      {infoContainer}
+      <Search placeholder="Search for any IP address or domain" onSearch={(word) => handleSearch(word)} />
+      {error ? errorContainer : infoContainer}
     </header>
   )
 };

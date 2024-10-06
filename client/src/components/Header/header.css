@@ -25,6 +25,13 @@ header {
     color: black;
 }
 
+.info-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
 .info-box h6 {
     color: grey;
 }
