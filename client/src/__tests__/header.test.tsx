@@ -4,23 +4,17 @@ import userEvent from '@testing-library/user-event';
 import Header from '../components/Header/Header';
 
 describe('Header', () => {
-    test('renders Header component', () => {
+    it('renders Header component', () => {
         render(<Header />);
         const title = screen.getByText(/IP Address Tracker/i);
         expect(title).toBeInTheDocument();
-    });
-
-    test('renders Search component as children', async () => {
-        render(<Header />);
-        const input = screen.getByPlaceholderText(/Search for any IP address or domain/i);
-        expect(input).toBeInTheDocument();
     });
 
     beforeEach(() => {
         global.fetch = jest.fn();
     });
 
-    test('fetches data and displays results', async () => {
+    it('fetches data and displays results', async () => {
         const testResponseData = {
             ip: '192.212.174.101',
             location: {
@@ -42,7 +36,7 @@ describe('Header', () => {
             } as Response)
           );
         render(<Header />);
-        const input = screen.getByPlaceholderText(/Search for any IP address or domain/i);
+        const input = screen.getByTestId('search-input');
         await userEvent.type(input, '123');
         await userEvent.click(screen.getByRole('button'));
 
@@ -52,5 +46,19 @@ describe('Header', () => {
         expect(await screen.findByText('UTC -05:00')).toBeInTheDocument();
         expect(await screen.findByText('SpaceX Starlink')).toBeInTheDocument();
 
+        (global.fetch as jest.Mock).mockRestore();
+    });
+    it('fetch reject and render error message', async () => {
+        jest.spyOn(global, 'fetch').mockImplementation(() =>
+            Promise.reject(new Error('Something went wrong'))
+          );
+        render(<Header />);
+        const input = screen.getByTestId('search-input');
+        await userEvent.type(input, '123');
+        await userEvent.click(screen.getByRole('button'));
+
+        const errorText = await screen.findByText(/Something went wrong/i) as HTMLElement;
+        expect(errorText).toBeInTheDocument();
+        (global.fetch as jest.Mock).mockRestore();
     });
 });
