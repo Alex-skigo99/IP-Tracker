@@ -23,13 +23,12 @@ header {
     background-color: white;
     border-radius: 20px;
     color: black;
+    z-index: 1;
 }
 
 .info-box {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 1rem;
 }
 
 .info-box h6 {
@@ -39,4 +38,34 @@ header {
 .info-box p {
     font-size: 18px;
     font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        height: 300px;
+        background-image: url('/images/pattern-bg-mobile.png');
+        background-size: cover;
+    }
+
+    #title {
+        font-size: 1.5rem;
+    }
+
+    .info-container {
+        flex-direction: column;
+        align-items: center;
+        width: 75%;
+    }
+
+    .info-box h6 {
+        margin: 0.5rem 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .info-box p {
+        margin: 0 0 0.5rem 0;
+        padding: 0;
+    }
+
 }

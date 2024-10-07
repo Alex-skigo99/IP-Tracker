@@ -9,7 +9,7 @@ const config: Config = {
     '^.+\\.(ts|tsx)$': 'ts-jest',                       // Transform TypeScript files using ts-jest
   },
   moduleNameMapper: {
-    '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/src/__ mocks __/fileMock.js',
+    '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__ mocks __/fileMock.js',
     '\\.(css|less|scss)$': 'identity-obj-proxy',
   },
 };

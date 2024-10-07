@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import './header.css';
 import Search from './Search';
+import { IpDataType } from '../App/App';
 
-const Header = () => {
-  const sampleIpData = {
-    ip: '192.212.174.101',
-    location: 'Brooklyn, NY 10001',
-    timezone: 'UTC -05:00',
-    isp: 'SpaceX Starlink',
-    lat: 40.71427,
-    lng: -74.00597
-  };
-  const [ipData, setIpData] = useState(sampleIpData);
+interface HeaderProps {
+  ipData: IpDataType;
+  setIpData: (fetchData: IpDataType) => void;
+};
+
+const Header = ({ipData, setIpData}: HeaderProps) => {
   const [error, setError] = useState<string>('');
   const apiKey = process.env.API_KEY;
   const apiURL = process.env.API_URL;
@@ -31,8 +28,8 @@ const Header = () => {
         });
       } catch (error: any) {
         const errorText = String(error);
-        console.log('Error:', errorText);
-        setError(String(errorText));
+        console.log('Error:', error);
+        setError(errorText);
       }
   };
 
@@ -58,7 +55,7 @@ const Header = () => {
   );
   const errorContainer = (
     <div className='error-container'>
-      <p>{error}</p>
+      {error}
     </div>
   );
 
