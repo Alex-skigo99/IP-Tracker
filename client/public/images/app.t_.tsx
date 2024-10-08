@@ -1,24 +1,9 @@
 import {render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Header from '../components/Header/Header';
 import userEvent from '@testing-library/user-event';
+import App from '../components/App/App';
 
-const ipDataMock = {
-    ip: '',
-    location: '',
-    timezone: '',
-    isp: '',
-    lat: 0,
-    lng: 0
-};
-
-describe('Header', () => {
-    it('renders Header component', () => {
-        render(<Header ipData={ipDataMock} setIpData={jest.fn()} />);
-        const title = screen.getByText(/IP Address Tracker/i);
-        expect(title).toBeInTheDocument();
-    });
-
+describe('App', () => {
     beforeEach(() => {
         global.fetch = jest.fn();
     });
@@ -47,25 +32,23 @@ describe('Header', () => {
               json: () => Promise.resolve({ ...testResponseData}),
             } as Response)
           );
-        render(<Header ipData={ipDataMock} setIpData={jest.fn()} 
-        />);
+        render(<App />);
         const input = screen.getByTestId('search-input');
         await userEvent.type(input, '123');
         await userEvent.click(screen.getByRole('button'));
 
         expect(global.fetch).toHaveBeenCalledTimes(1);
-        // expect(await screen.findByText('192.212.174.101')).toBeInTheDocument();
-        // expect(await screen.findByText('Brooklyn, NY, US 10001')).toBeInTheDocument();
-        // expect(await screen.findByText('UTC -05:00')).toBeInTheDocument();
-        // expect(await screen.findByText('SpaceX Starlink')).toBeInTheDocument();
+        expect(await screen.findByText('192.212.174.101')).toBeInTheDocument();
+        expect(await screen.findByText('Brooklyn, NY, US 10001')).toBeInTheDocument();
+        expect(await screen.findByText('UTC -05:00')).toBeInTheDocument();
+        expect(await screen.findByText('SpaceX Starlink')).toBeInTheDocument();
     });
     
     it('fetch reject and render error message', async () => {
         jest.spyOn(global, 'fetch').mockImplementation(() =>
             Promise.reject(new Error('Something went wrong'))
           );
-          render(<Header ipData={ipDataMock} setIpData={jest.fn()} 
-          />);
+          render(<App />);
           const input = screen.getByTestId('search-input');
         await userEvent.type(input, '123');
         await userEvent.click(screen.getByRole('button'));
@@ -73,5 +56,4 @@ describe('Header', () => {
         const errorText = await screen.findByText(/Something went wrong/i) as HTMLElement;
         expect(errorText).toBeInTheDocument();
     });
-
 });

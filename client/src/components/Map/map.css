@@ -1,0 +1,12 @@
+.map-container {
+    width: 100%;
+    height: calc(100vh - 200px);
+    z-index: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .map-container {
+        height: calc(100vh - 300px);
+    }
+
+}
